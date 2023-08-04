@@ -66,7 +66,7 @@ class CustomUser(AbstractUser):
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'role']
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.role == Role.ADMIN:
