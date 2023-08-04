@@ -35,7 +35,7 @@ ALLOWED_HOSTS = env_config('ALLOWED_HOSTS').split(',')
 
 # Application definition
 MY_APPS = [
-
+    'apps.accounts',
 ]
 
 THIRD_PARTY_APPS = [
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 ROOT_URLCONF = 'config.urls'
 
