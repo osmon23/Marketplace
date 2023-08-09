@@ -63,4 +63,36 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Seller)
 class SellerAdmin(CustomUserAdmin):
-    pass
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (_("Personal info"), {"fields": (
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "photo",
+            "address",
+            "birthday",
+            "job",
+            "specialization",
+            "whatsapp",
+            "telegram",
+            "role",
+            "INN",
+            "type",
+            "certificate_number",
+            )}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )

@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from .constants import Role
+from .constants import Role, Type
 
 class CustomUser(AbstractUser):
     email = models.EmailField(
@@ -82,6 +82,26 @@ class CustomUser(AbstractUser):
 
 
 class Seller(CustomUser):
+    INN = models.PositiveIntegerField(
+        _('INN'),
+        unique=True,
+    )
+    type = models.CharField(
+        _('Type'),
+        max_length=1,
+        choices=Type.choices,
+        default=Type.NATURAL,
+        null=True,
+        blank=True,
+    )
+    certificate_number = models.PositiveSmallIntegerField(
+        _('Certificate number'),
+        null=True,
+        blank=True,
+    )
+
+    REQUIRED_FIELDS = ['username', 'role', 'INN']
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.role = Role.SELLER
         super().save(force_insert, force_update, using, update_fields)

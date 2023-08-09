@@ -1,8 +1,9 @@
 from django.shortcuts import render
 
 from rest_framework import viewsets, permissions
+from rest_framework.response import Response
 
-from .serializers import CustomUserSerializer, SellerSerializer
+from .serializers import CustomUserSerializer, SellerSerializer, UserUpdateSerializer, SellerUpdateSerializer
 from .models import CustomUser, Seller
 from .constants import Role
 
@@ -12,8 +13,18 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.AllowAny]
 
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return UserUpdateSerializer
+        return self.serializer_class
+
 
 class SellerViewSet(viewsets.ModelViewSet):
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return SellerUpdateSerializer
+        return self.serializer_class
