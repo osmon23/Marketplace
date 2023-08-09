@@ -1,7 +1,6 @@
 from django.shortcuts import render
 
 from rest_framework import viewsets, permissions
-from rest_framework.response import Response
 
 from .serializers import CustomUserSerializer, SellerSerializer, UserUpdateSerializer, SellerUpdateSerializer
 from .models import CustomUser, Seller
