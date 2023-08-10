@@ -99,6 +99,12 @@ class Seller(CustomUser):
         null=True,
         blank=True,
     )
+    confirmation_code = models.CharField(
+        _('Confirmation Code'),
+        max_length=10,
+        null=True,
+        blank=True,
+    )
 
     REQUIRED_FIELDS = ['username', 'role', 'INN']
 
