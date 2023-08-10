@@ -59,6 +59,7 @@ class CustomUserAdmin(UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
+    save_on_top = True
 
 
 @admin.register(Seller)
@@ -96,4 +97,13 @@ class SellerAdmin(CustomUserAdmin):
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "username", "INN", "password1", "password2"),
+            },
+        ),
     )
