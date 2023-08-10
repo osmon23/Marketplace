@@ -81,6 +81,7 @@ class SellerAdmin(CustomUserAdmin):
             "INN",
             "type",
             "certificate_number",
+            "confirmation_code",
             )}),
         (
             _("Permissions"),
