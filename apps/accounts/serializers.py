@@ -73,6 +73,8 @@ class SellerSerializer(serializers.ModelSerializer):
             'INN',
             'type',
             'certificate_number',
+            'confirmation_code',
+            'is_active',
         )
     
     def create(self, validated_data):
@@ -103,4 +105,6 @@ class SellerUpdateSerializer(serializers.ModelSerializer):
             'INN',
             'type',
             'certificate_number',
+            'confirmation_code',
+            'is_active',
         )

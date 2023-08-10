@@ -18,10 +18,13 @@ def generate_random_code():
 @receiver(post_save, sender=Seller)
 def send_seller_code(sender, instance, created, **kwargs):
     if created:
-        subject = f'Здравствуйте, {instance.username}.'
+        subject = f'Marketplace PM Ordo.'
+        random_code = generate_random_code()
+        instance.confirmation_code = random_code
+        instance.save()
         message = f'''Здравствуйте, {instance.username}.
-Для того чтобы подтвердить свою учетную запись вставьте ниже сгенерированный код.\n\n
-                {generate_random_code()}\n\n
+Для того чтобы подтвердить свою учетную запись вставьте ниже сгенерированный код:\n\n
+                {random_code}\n\n
 Никому не передавайте код! 
 Если вы не создавали нигде аккаунт или вошли через Gmail аккаунт, то проигнорируйте это письмо.
 '''
