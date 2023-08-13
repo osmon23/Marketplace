@@ -26,7 +26,7 @@ def send_seller_code(sender, instance, created, **kwargs):
 Для того чтобы подтвердить свою учетную запись вставьте ниже сгенерированный код:\n\n
                 {random_code}\n\n
 Никому не передавайте код! 
-Если вы не создавали нигде аккаунт или вошли через Gmail аккаунт, то проигнорируйте это письмо.
+Если вы не создавали нигде аккаунт то, проигнорируйте это письмо.
 '''
         from_email = settings.EMAIL_HOST_USER
         to_email = instance.email if instance.email else settings.EMAIL_HOST_USER
