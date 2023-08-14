@@ -59,6 +59,7 @@ class CustomUserAdmin(UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
+    list_filter = ('role', 'is_staff', 'is_active',)
     save_on_top = True
 
 
