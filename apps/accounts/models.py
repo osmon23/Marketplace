@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .constants import Role, Type
+from .validators import validate_inn
 
 class CustomUser(AbstractUser):
     email = models.EmailField(
@@ -85,6 +86,7 @@ class Seller(CustomUser):
     INN = models.PositiveIntegerField(
         _('INN'),
         unique=True,
+        validators=[validate_inn],
     )
     type = models.CharField(
         _('Type'),
@@ -94,7 +96,7 @@ class Seller(CustomUser):
         null=True,
         blank=True,
     )
-    certificate_number = models.PositiveSmallIntegerField(
+    certificate_number = models.PositiveIntegerField(
         _('Certificate number'),
         null=True,
         blank=True,
