@@ -106,3 +106,42 @@ class Specifications(models.Model):
     class Meta:
         verbose_name = _('Specification')
         verbose_name_plural = _('Specifications')
+
+
+class Review(models.Model):
+    email = models.EmailField(
+        blank=True,
+        null=True
+    )
+    name = models.CharField(
+        _("Name"),
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    text = models.TextField(
+        _("Text"),
+        max_length=5000
+    )
+    parent = models.ForeignKey(
+        'self',
+        verbose_name=_("Parent"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="children",
+    )
+    product = models.ForeignKey(
+        Product,
+        verbose_name="product",
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        default=None,
+    )
+
+    def __str__(self):
+        return f"{self.product.name}"
+
+    class Meta:
+        verbose_name = _('Review')
+        verbose_name_plural = _('Reviews')

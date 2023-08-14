@@ -1,4 +1,7 @@
 from rest_framework import routers
+from django.urls import path
+from . import views
+
 
 from .views import ProductViewSet, StoreViewSet
 
@@ -7,4 +10,6 @@ router = routers.DefaultRouter()
 router.register(r'products', ProductViewSet, basename='products')
 router.register(r'stores', StoreViewSet, basename='stores')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("review/", views.ReviewCreateView.as_view(), name="review-create")
+] + router.urls

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Specifications, ProductImage, Product, Store
+from .models import Specifications, ProductImage, Product, Store, Review
 
 
 class SpecificationsInline(admin.TabularInline):
@@ -12,11 +12,20 @@ class ProductImageInline(admin.TabularInline):
     extra = 1
 
 
+class ReviewInline(admin.TabularInline):
+    model = Review
+    extra = 1
+    readonly_fields = (
+        "name",
+    )
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [
         SpecificationsInline,
         ProductImageInline,
+        ReviewInline,
     ]
     save_on_top = True
     list_display = (
@@ -68,4 +77,17 @@ class SpecificationsAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'name',
+    )
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "parent",
+        "product",
+        "id"
+    )
+    readonly_fields = (
+        "name",
     )
