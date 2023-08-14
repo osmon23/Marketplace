@@ -23,14 +23,23 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'telegram',
             'role'
         )
-    
+
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            password=validated_data['password']
-        )
-        return user
+        if 'role' in validated_data:
+            user_with_role = CustomUser.objects.create_user(
+                email=validated_data['email'],
+                username=validated_data['username'],
+                password=validated_data['password'],
+                role=validated_data['role'],
+            )
+            return user_with_role
+        else:
+            user = CustomUser.objects.create_user(
+                email=validated_data['email'],
+                username=validated_data['username'],
+                password=validated_data['password'],
+            )
+            return user
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):

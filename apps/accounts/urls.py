@@ -1,4 +1,4 @@
-from django.urls import  path
+from django.urls import  path, include
 
 from rest_framework import routers
 
@@ -9,4 +9,8 @@ router = routers.DefaultRouter()
 router.register(r'users', CustomUserViewSet, basename='users')
 router.register(r'sellers', SellerViewSet, basename='sellers')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('password-reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+]
+
+urlpatterns += router.urls

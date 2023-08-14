@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'rest_framework',
     'drf_spectacular',
+    'django_rest_passwordreset',
 ]
 
 INSTALLED_APPS = [
@@ -214,6 +215,14 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = env_config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env_config('EMAIL_HOST_PASSWORD')
+
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    "CLASS": "django_rest_passwordreset.tokens.RandomStringTokenGenerator",
+    "OPTIONS": {
+        "min_length": 20,
+        "max_length": 30
+    }
+}
 
 with contextlib.suppress(ImportError):
     from .local_settings import *
