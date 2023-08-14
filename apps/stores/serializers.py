@@ -1,6 +1,5 @@
-from .models import Specifications, ProductImage, Product, Store, Review
+from .models import Specifications, ProductImage, Product, Store, Review, Category
 from rest_framework import serializers
-
 
 
 class FilterReviewListSerializer(serializers.ListSerializer):
@@ -41,6 +40,18 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "text", "children")
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    children = RecursiveSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'children',
+        )
+
+
 class SpecificationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specifications
@@ -60,10 +71,23 @@ class ProductImageSerializer(serializers.ModelSerializer):
         )
 
 
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = (
+            'id',
+            'name',
+            'address',
+            'description',
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)
-    specifications = SpecificationsSerializer(many=True, read_only=True)
+    images = ProductImageSerializer(many=True, required=False)
+    specifications = SpecificationsSerializer(many=True)
     reviews = ReviewSerializer(many=True, read_only=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
 
     class Meta:
         model = Product
@@ -76,16 +100,26 @@ class ProductSerializer(serializers.ModelSerializer):
             'images',
             'specifications',
             'reviews',
+            'category',
+            'store'
         )
 
+    def create(self, validated_data):
+        # Обработка вложенных полей, например, images и specifications
+        images_data = validated_data.pop('images', [])
+        specifications_data = validated_data.pop('specifications', [])
 
-class StoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Store
-        fields = (
-            'id',
-            'name',
-            'address',
-            'description',
-        )
+        product = Product.objects.create(**validated_data)
+
+        # Создание связанных объектов, например, ProductImage
+        for image_data in images_data:
+            ProductImage.objects.create(product=product, **image_data)
+
+        for spec_data in specifications_data:
+            Specifications.objects.create(product=product, **spec_data)
+
+        return product
+
+
+
 

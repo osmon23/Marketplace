@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Specifications, ProductImage, Product, Store, Review
+from mptt.admin import DraggableMPTTAdmin
+
+from .models import Specifications, ProductImage, Product, Store, Review, Category
 
 
 class SpecificationsInline(admin.TabularInline):
@@ -18,6 +20,23 @@ class ReviewInline(admin.TabularInline):
     readonly_fields = (
         "name",
     )
+
+
+admin.site.register(
+    Category,
+    DraggableMPTTAdmin,
+    list_display=(
+        'tree_actions',
+        'indented_title',
+        'id'
+    ),
+    list_display_links=(
+        'indented_title',
+    ),
+    list_filter=[
+        'parent'
+    ]
+)
 
 
 @admin.register(Product)

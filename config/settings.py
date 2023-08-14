@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'rest_framework',
     'drf_spectacular',
+    'mptt',
 ]
 
 INSTALLED_APPS = [

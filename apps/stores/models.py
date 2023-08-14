@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from mptt.models import MPTTModel, TreeForeignKey
+
 from apps.accounts.models import Seller
 
 
@@ -36,12 +38,42 @@ class Store(models.Model):
         verbose_name_plural = _('Stores')
 
 
+class Category(MPTTModel):
+    name = models.CharField(
+        _('Name'),
+        max_length=100,
+    )
+    parent = TreeForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='children'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class MPTTMeta:
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
+        order_insertion_by = ['name']
+        level_attr = 'mptt_level'
+
+
 class Product(models.Model):
     store = models.ForeignKey(
         Store,
         on_delete=models.CASCADE,
         related_name='products',
         verbose_name=_('Store'),
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('Category'),
+        default=None,
     )
     name = models.CharField(
         _('Name'),
