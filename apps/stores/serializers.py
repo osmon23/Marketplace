@@ -79,6 +79,7 @@ class StoreSerializer(serializers.ModelSerializer):
             'name',
             'address',
             'description',
+            'logo',
         )
 
 
