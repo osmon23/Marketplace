@@ -20,7 +20,7 @@ class StoreViewSet(viewsets.ModelViewSet):
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewCreateSerializer
     queryset = Review.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class CategoryListView(generics.ListAPIView):

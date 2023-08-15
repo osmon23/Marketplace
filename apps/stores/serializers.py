@@ -1,5 +1,8 @@
-from .models import Specifications, ProductImage, Product, Store, Review, Category
 from rest_framework import serializers
+
+from .models import Specifications, ProductImage, Product, Store, Review, Category
+
+from ..accounts.models import Seller
 
 
 class FilterReviewListSerializer(serializers.ListSerializer):
@@ -72,6 +75,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    seller = serializers.PrimaryKeyRelatedField(queryset=Seller.objects.all())
     class Meta:
         model = Store
         fields = (
@@ -80,6 +84,7 @@ class StoreSerializer(serializers.ModelSerializer):
             'address',
             'description',
             'logo',
+            'seller',
         )
 
 
@@ -106,13 +111,11 @@ class ProductSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        # Обработка вложенных полей, например, images и specifications
         images_data = validated_data.pop('images', [])
         specifications_data = validated_data.pop('specifications', [])
 
         product = Product.objects.create(**validated_data)
 
-        # Создание связанных объектов, например, ProductImage
         for image_data in images_data:
             ProductImage.objects.create(product=product, **image_data)
 
