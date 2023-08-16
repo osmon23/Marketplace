@@ -6,12 +6,12 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ('product_id', 'quantity')
+        fields = ('id', 'product_id', 'quantity')
 
 
-class CartSerializer(serializers.ModelSerializer):
-    cart_items = CartItemSerializer(many=True)
+class CartItemListSerializer(serializers.ModelSerializer):
+    product = serializers.StringRelatedField()
 
     class Meta:
-        model = Cart
-        fields = ('customer', 'cart_items')
+        model = CartItem
+        fields = ('product', 'quantity')

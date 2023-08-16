@@ -1,44 +1,10 @@
-from rest_framework import viewsets, permissions, status, request, generics
+from rest_framework import permissions, status, generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer
+from .serializers import CartItemSerializer, CartItemListSerializer
 from ..stores.models import Product
-
-
-class CartViewSet(viewsets.ModelViewSet):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(customer=self.request.user.customer)
-
-    def perform_update(self, serializer):
-        instance = self.get_object()
-
-        if instance.customer != self.request.user.customer:
-            return Response(
-                {"detail": "You don't have permission to update this cart."},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if instance.customer != self.request.user.customer:
-            return Response(
-                {"detail": "You don't have permission to delete this cart."},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AddToCartView(generics.CreateAPIView):
@@ -69,3 +35,34 @@ class AddToCartView(generics.CreateAPIView):
 
     def get_queryset(self):
         return CartItem.objects.all
+
+
+class RemoveFromCartView(generics.DestroyAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return CartItem.objects.filter(cart__customer=user)
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemsListView(generics.ListAPIView):
+    serializer_class = CartItemListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            cart = Cart.objects.get(customer=user)
+            return cart.cart_items.all()
+        except Cart.DoesNotExist:
+            return []
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
