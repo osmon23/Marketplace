@@ -41,6 +41,7 @@ MY_APPS = [
     'apps.chatbot',
     'apps.news',
     'apps.cart',
+    'apps.favorites'
 ]
 
 THIRD_PARTY_APPS = [

@@ -1,50 +1,49 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, generics
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from .models import Cart, CartItem
-from .serializers import CartItemSerializer, CartItemListSerializer
+from .models import Favorite, FavoriteItem
+from .serializers import FavoriteItemListSerializer, FavoriteItemSerializer
+
 from ..stores.models import Product
 
 
-class AddToCartView(generics.CreateAPIView):
-    serializer_class = CartItemSerializer
+class AddToFavoriteView(generics.CreateAPIView):
+    serializer_class = FavoriteItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         user = self.request.user
         product_id = self.request.data.get('product_id')
-        quantity = int(self.request.data.get('quantity', 1))
 
         try:
-            cart = Cart.objects.get(customer=user)
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create(customer=user)
+            favorite = Favorite.objects.get(customer=user)
+        except Favorite.DoesNotExist:
+            favorite = Favorite.objects.create(customer=user)
 
         try:
             product = Product.objects.get(pk=product_id)
         except Product.DoesNotExist:
             raise ValidationError({"detail": "Product not found."})
 
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        cart_item.quantity += quantity
-        cart_item.save()
+        favorite_item, created = FavoriteItem.objects.get_or_create(favorite=favorite, product=product)
+        favorite_item.save()
 
-        serializer = self.serializer_class(cart_item)
+        serializer = self.serializer_class(favorite_item)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
-        return CartItem.objects.all
+        return FavoriteItem.objects.all
 
 
-class RemoveFromCartView(generics.DestroyAPIView):
-    serializer_class = CartItemSerializer
+class RemoveFromFavoriteView(generics.DestroyAPIView):
+    serializer_class = FavoriteItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return CartItem.objects.filter(cart__customer=user)
+        return FavoriteItem.objects.filter(favorite__customer=user)
 
     def perform_destroy(self, instance):
         instance.delete()
@@ -53,23 +52,23 @@ class RemoveFromCartView(generics.DestroyAPIView):
     def get_object(self):
         queryset = self.get_queryset()
         filter_kwargs = {
-            'cart__customer': self.request.user,
+            'favorite__customer': self.request.user,
             'product_id': self.kwargs['pk']
         }
         obj = get_object_or_404(queryset, **filter_kwargs)
         return obj
 
 
-class CartItemsListView(generics.ListAPIView):
-    serializer_class = CartItemListSerializer
+class FavoriteItemsListView(generics.ListAPIView):
+    serializer_class = FavoriteItemListSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         try:
-            cart = Cart.objects.get(customer=user)
-            return cart.cart_items.all()
-        except Cart.DoesNotExist:
+            favorite = Favorite.objects.get(customer=user)
+            return favorite.favorite_items.all()
+        except Favorite.DoesNotExist:
             return []
 
     def list(self, request, *args, **kwargs):
