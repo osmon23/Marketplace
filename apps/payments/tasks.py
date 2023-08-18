@@ -24,3 +24,7 @@ def activate_payment():
     for payment in payments:
         payment.is_active = True
         payment.save()
+
+
+#
+#
