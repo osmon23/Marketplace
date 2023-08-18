@@ -154,19 +154,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'payment',
         )
 
-    def create(self, validated_data):
-        images_data = validated_data.pop('images', [])
-        specifications_data = validated_data.pop('specifications', [])
-
-        product = Product.objects.create(**validated_data)
-
-        for image_data in images_data:
-            ProductImage.objects.create(product=product, **image_data)
-
-        for spec_data in specifications_data:
-            Specifications.objects.create(product=product, **spec_data)
-
-        return product
 
 
 
