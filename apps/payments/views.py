@@ -32,3 +32,6 @@ class PaymentTypeChoicesView(APIView):
         serializer = self.serializer_class(data=self.queryset, many=True)
         serializer.is_valid()
         return Response(serializer.data)
+
+#
+#
