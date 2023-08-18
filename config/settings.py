@@ -41,7 +41,8 @@ MY_APPS = [
     'apps.chatbot',
     'apps.news',
     'apps.cart',
-    'apps.favorites'
+    'apps.favorites',
+    'apps.payments',
 ]
 
 THIRD_PARTY_APPS = [
@@ -226,6 +227,23 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
         "min_length": 20,
         "max_length": 30
     }
+}
+
+#Redis
+REDIS_HOST = env_config('REDIS_HOST', default='localhost')
+REDIS_PORT = env_config('REDIS_PORT', default=6379, cast=int)
+
+# Celery
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
 }
 
 with contextlib.suppress(ImportError):

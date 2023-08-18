@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from .models import Specifications, ProductImage, Product, Store, Review, Category
+from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount
 
 from ..accounts.models import Seller
+from ..payments.serializers import PaymentInlineSerializer
 
 
 class FilterReviewListSerializer(serializers.ListSerializer):
@@ -88,27 +89,39 @@ class StoreSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductDiscountSerializer(serializers.ModelSerializer):
+    discounted_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductDiscount
+        fields = (
+            'id',
+            'product',
+            'discount',
+            'start_date',
+            'end_date',
+            'discounted_price')
+
+    def get_discounted_price(self, obj):
+        return obj.calculate_discounted_price()
+
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, required=False)
     specifications = SpecificationsSerializer(many=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+    discounts = ProductDiscountSerializer(many=True, read_only=True)
+    payment = serializers.SerializerMethodField(read_only=True)
 
-    class Meta:
-        model = Product
-        fields = (
-            'id',
-            'name',
-            'description',
-            'price',
-            'quantity',
-            'images',
-            'specifications',
-            'reviews',
-            'category',
-            'store'
-        )
+    def get_payment(self, obj: Product) -> dict:
+        payment = obj.get_actual_payment()
+
+        if not payment:
+            return {}
+
+        return PaymentInlineSerializer(payment).data
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
@@ -124,6 +137,36 @@ class ProductSerializer(serializers.ModelSerializer):
 
         return product
 
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'name',
+            'description',
+            'price',
+            'quantity',
+            'images',
+            'specifications',
+            'reviews',
+            'category',
+            'store',
+            'discounts',
+            'payment',
+        )
+
+    def create(self, validated_data):
+        images_data = validated_data.pop('images', [])
+        specifications_data = validated_data.pop('specifications', [])
+
+        product = Product.objects.create(**validated_data)
+
+        for image_data in images_data:
+            ProductImage.objects.create(product=product, **image_data)
+
+        for spec_data in specifications_data:
+            Specifications.objects.create(product=product, **spec_data)
+
+        return product
 
 
 

@@ -44,6 +44,7 @@ api_v1_patterns = [
     path('news/', include('apps.news.urls')),
     path('carts/', include('apps.cart.urls')),
     path('favorites/', include('apps.favorites.urls')),
+    path('payments/', include('apps.payments.urls')),
 ]
 
 urlpatterns = [

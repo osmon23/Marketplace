@@ -1,7 +1,13 @@
 from rest_framework import viewsets, permissions, generics
 
-from .models import Product, Store, Review, Category
-from .serializers import ProductSerializer, StoreSerializer, ReviewCreateSerializer, CategorySerializer
+from .models import Product, Store, Review, Category, ProductDiscount
+from .serializers import (
+    ProductSerializer,
+    StoreSerializer,
+    ReviewCreateSerializer,
+    CategorySerializer,
+    ProductDiscountSerializer
+)
 from .permissions import IsAdminOrSeller
 
 
@@ -26,4 +32,10 @@ class ReviewCreateView(generics.CreateAPIView):
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class ProductDiscountViewSet(viewsets.ModelViewSet):
+    queryset = ProductDiscount.objects.all()
+    serializer_class = ProductDiscountSerializer
     permission_classes = [permissions.AllowAny]

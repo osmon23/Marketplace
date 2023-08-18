@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from .models import Specifications, ProductImage, Product, Store, Review, Category
+from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount
 
 
 class SpecificationsInline(admin.TabularInline):
@@ -109,4 +109,27 @@ class ReviewAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         "name",
+    )
+
+
+@admin.register(ProductDiscount)
+class ProductDiscountAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "product",
+        "discount",
+        "start_date",
+        "end_date",
+
+    )
+    list_filter = (
+        "product",
+        "start_date",
+        "end_date"
+    )
+    search_fields = (
+        "product__name",
+    )
+    list_display_links = (
+        "product",
     )
