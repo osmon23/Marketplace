@@ -47,13 +47,3 @@ class ProductDiscountViewSet(viewsets.ModelViewSet):
     serializer_class = ProductDiscountSerializer
     permission_classes = [permissions.AllowAny]
 
-
-class ProductSearchView(generics.ListAPIView):
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.AllowAny]
-
-    def get_queryset(self):
-        query = self.request.query_params.get('query', '')
-        queryset = Product.objects.filter(Q(name__icontains=query) | Q(name__icontains=query.capitalize()))
-        queryset = queryset.order_by('price')
-        return queryset

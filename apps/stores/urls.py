@@ -5,7 +5,7 @@ from django.urls import path
 from . import views
 
 
-from .views import ProductViewSet, StoreViewSet, ProductDiscountViewSet, ProductSearchView
+from .views import ProductViewSet, StoreViewSet, ProductDiscountViewSet
 
 router = routers.DefaultRouter()
 
@@ -16,5 +16,4 @@ router.register(r'discounts', ProductDiscountViewSet, basename='diescounts')
 urlpatterns = [
     path("review/", views.ReviewCreateView.as_view(), name="review-create"),
     path("categories/", views.CategoryListView.as_view(), name="categories"),
-    path('product/search/', ProductSearchView.as_view(), name='product-search'),
 ] + router.urls
