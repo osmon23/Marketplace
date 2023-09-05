@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 
-from .models import AboutUs, AboutUsImage, AboutUsVideo
-from .serializers import AboutUsSerializer, AboutUsImageSerializer, AboutUsVideoSerializer
+from .models import AboutUs, AboutUsImage, AboutUsVideo, Contacts
+from .serializers import AboutUsSerializer, AboutUsImageSerializer, AboutUsVideoSerializer, ContactsSerializer
 
 
 class AboutUsListView(generics.ListAPIView):
@@ -34,6 +34,11 @@ class AboutUsListView(generics.ListAPIView):
 
         return Response(about_us_data)
 
+
+class ContactsViewSet(viewsets.ModelViewSet):
+    queryset = Contacts.objects.all()
+    serializer_class = ContactsSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 '''
 если понадобится crud на будущее

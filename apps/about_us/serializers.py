@@ -22,3 +22,13 @@ class AboutUsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutUs
         fields = '__all__'
+
+
+class ContactsSerializer(serializers.Serializer):
+    class Meta:
+        model = AboutUs
+        fields = (
+            'name',
+            'value',
+        )
+

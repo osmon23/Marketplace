@@ -67,3 +67,14 @@ class AboutUsVideo(models.Model):
     class Meta:
         verbose_name = _('About us video')
         verbose_name_plural = _('About us videos')
+
+
+class Contacts(models.Model):
+    name = models.CharField(
+        _('Name'),
+        max_length=100,
+    )
+    value = models.CharField(
+        _('Value'),
+        max_length=100,
+    )

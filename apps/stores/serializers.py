@@ -142,6 +142,9 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'brand',
+            'country_of_origin',
+            'fuel_type',
             'description',
             'price',
             'quantity',

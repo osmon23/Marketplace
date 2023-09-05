@@ -66,6 +66,20 @@ class Category(MPTTModel):
         level_attr = 'mptt_level'
 
 
+class FuelType(models.Model):
+    name = models.CharField(
+        _('Name'),
+        max_length=100,
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Fuel type')
+        verbose_name_plural = _('Fuel types')
+
+
 class Product(models.Model):
     store = models.ForeignKey(
         Store,
@@ -80,8 +94,24 @@ class Product(models.Model):
         verbose_name=_('Category'),
         default=None,
     )
+    fuel_type = models.ForeignKey(
+        FuelType,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('Fuel type'),
+        null=True,
+        blank=True,
+    )
     name = models.CharField(
         _('Name'),
+        max_length=100,
+    )
+    brand = models.CharField(
+        _('Brand'),
+        max_length=100,
+    )
+    country_of_origin = models.CharField(
+        _('Country of origin'),
         max_length=100,
     )
     description = models.TextField(

@@ -49,6 +49,9 @@ class ProductAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = (
         'id',
+        'brand',
+        'country_of_origin',
+        'fuel_type',
         'name',
         'price',
         'quantity',

@@ -1,17 +1,17 @@
 from django.urls import  path
+from rest_framework import routers
 
-from .views import AboutUsListView
+
+from .views import AboutUsListView, ContactsViewSet
+
+router = routers.DefaultRouter()
+
+router.register(r'contacts', ContactsViewSet, basename='contacts')
 
 urlpatterns = [
     path('', AboutUsListView.as_view(), name='about_us'),
-]
+] + router.urls
 
-'''
-если понадобится crud на будущее при использовании viewsets
-'''
-# from rest_framework import routers
-
-# router = routers.DefaultRouter()
 
 # router.register(r'', AboutUsViewSet, basename='about_us')
 # router.register(r'images', AboutUsImageViewSet, basename='about_us_images')

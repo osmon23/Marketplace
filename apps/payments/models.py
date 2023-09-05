@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 from utils.time import get_current_date
 from .constants import PaymentTypeChoices
+from ..accounts.models import Seller
 # from utils.time import get_current_date
 
 from ..stores.models import Product
@@ -110,3 +111,12 @@ class Payment(models.Model):
 
         if not self.amount:
             self.amount = self.type.price
+
+
+class SellerPayment(models.Model):
+    seller = models.ForeignKey(
+        Seller,
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name=_('Seller')
+    )
