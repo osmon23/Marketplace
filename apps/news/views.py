@@ -1,7 +1,7 @@
 
 from rest_framework import generics, permissions, viewsets
 
-from .filters import IsStaffOrSellerOrReadOnly
+from .permissions import IsStaffOrSellerOrReadOnly
 from .models import News, Article
 from .serializers import  NewsSerializer, ArticleSerializer
 
