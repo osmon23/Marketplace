@@ -14,7 +14,7 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description',)
+    list_display = ('id', 'title', 'description',)
     search_fields = ('title', 'description',)
     list_filter = ('title', 'description',)
     ordering = ('title',)

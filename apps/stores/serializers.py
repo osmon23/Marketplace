@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount
+from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount, FuelType
 
 from ..accounts.models import Seller
 from ..payments.serializers import PaymentInlineSerializer
@@ -106,6 +106,15 @@ class ProductDiscountSerializer(serializers.ModelSerializer):
         return obj.calculate_discounted_price()
 
 
+class FuelTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuelType
+        fields = (
+            'id',
+            'name'
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, required=False)
     specifications = SpecificationsSerializer(many=True)
@@ -114,6 +123,7 @@ class ProductSerializer(serializers.ModelSerializer):
     store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
     discounts = ProductDiscountSerializer(many=True, read_only=True)
     payment = serializers.SerializerMethodField(read_only=True)
+    fuel_type = FuelTypeSerializer(read_only=True)
 
     def get_payment(self, obj: Product) -> dict:
         payment = obj.get_actual_payment()
@@ -155,6 +165,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'store',
             'discounts',
             'payment',
+            'fuel_type'
         )
 
 
