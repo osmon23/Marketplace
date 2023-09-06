@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount
+from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount, FuelType
 
 
 class SpecificationsInline(admin.TabularInline):
@@ -135,4 +135,21 @@ class ProductDiscountAdmin(admin.ModelAdmin):
     )
     list_display_links = (
         "product",
+    )
+
+
+@admin.register(FuelType)
+class FuelTypeAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+    )
+    list_display_links = (
+        "name",
+    )
+    search_fields = (
+        "name",
+    )
+    list_filter = (
+        "name",
     )
