@@ -9,4 +9,4 @@ ADD . /app
 # Запускает команду pip install для всех библиотек, перечисленных в requirements.txt
 RUN pip install -r requirements.txt
 # Запускает команду makemigrations для создания файлов миграции на основе изменений в моделях
-CMD ["python", "manage.py", "makemigrations"]
+RUN python manage.py makemigrations
