@@ -23,6 +23,7 @@ class PaymentTypeAdmin(admin.ModelAdmin):
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'product',
         'type',
         'amount',
