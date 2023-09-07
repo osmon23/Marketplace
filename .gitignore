@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/venv,pycharm+all,python,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,pycharm+all,python,django
 Makefile
-
+dump.rdb
 
 ### Django ###
 *.log
