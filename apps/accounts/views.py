@@ -43,4 +43,3 @@ class SellerViewSet(viewsets.ModelViewSet):
         if self.action == 'update':
             return SellerUpdateSerializer
         return self.serializer_class
-# fff
