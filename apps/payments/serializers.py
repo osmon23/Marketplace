@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .constants import PaymentTypeChoices
-from .models import PaymentType, Payment
+from .models import PaymentType, Payment, Wallet
 
 
 class PaymentInlineSerializer(serializers.ModelSerializer):
@@ -42,22 +42,6 @@ class MembershipPaymentSerializer(serializers.ModelSerializer):
                 'type': _('Payment type is required.')
             })
 
-        if not data.get('period'):
-            data['period'] = _type.period
-
-        data['end_date'] = data.get('start_date') + timedelta(days=data.get('period'))
-
-        payment = data.get('membership').get_payment_by_date(
-            data.get('start_date'),
-            data.get('end_date'),
-            exclude=data.get('pk') if data.get('pk') else None
-        )
-
-        if payment:
-            raise serializers.ValidationError({
-                'payment': _('The specified payment period overlaps with an existing payment')
-            })
-
         if not data.get('amount'):
             data['amount'] = _type.price
 
@@ -74,3 +58,12 @@ class PaymentTypeChoiceSerializer(serializers.Serializer):
 
     def to_representation(self, obj):
         return {'value': str(obj[0]), 'label': str(obj[1])}
+
+
+class WalletSerializer(serializers.Serializer):
+    class Meta:
+        model = Wallet
+        fields = (
+            'id',
+            'amount',
+        )

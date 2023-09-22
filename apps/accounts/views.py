@@ -12,6 +12,7 @@ from .serializers import (
 from .models import CustomUser, Seller
 from .constants import Role
 from .permissions import IsOwnerOrReadOnly
+from ..payments.models import Wallet
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -37,7 +38,10 @@ class SellerViewSet(viewsets.ModelViewSet):
         instance.is_active = False
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        if not hasattr(self, 'wallet'):
+            Wallet.objects.create(user=self)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     def get_serializer_class(self):
         if self.action == 'update':

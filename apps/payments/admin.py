@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.payments.models import PaymentType, Payment
+from apps.payments.models import PaymentType, Payment, Wallet
 
 
 @admin.register(PaymentType)
@@ -10,7 +10,6 @@ class PaymentTypeAdmin(admin.ModelAdmin):
         'name',
         'type',
         'price',
-        'period'
     )
     list_display_links = ('name',)
     list_filter = ('type',)
@@ -27,17 +26,18 @@ class PaymentAdmin(admin.ModelAdmin):
         'product',
         'type',
         'amount',
-        'period',
         'created_at',
         'start_date',
-        'end_date',
-        'is_active',
-    )
-    readonly_fields = (
-        'end_date',
     )
     list_filter = (
         'type',
-        'is_active',
-        'end_date',
+    )
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'id',
+        'amount',
     )

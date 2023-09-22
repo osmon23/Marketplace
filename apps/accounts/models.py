@@ -7,6 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from .constants import Role, Type
 from .validators import validate_inn
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(
         _('Email'),

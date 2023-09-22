@@ -2,11 +2,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import generics
+from rest_framework import permissions
 from django_filters import rest_framework as filters
 
 from .constants import PaymentTypeChoices
-from .models import PaymentType, Payment
-from .serializers import PaymentTypeSerializer, PaymentTypeChoiceSerializer, MembershipPaymentSerializer
+from .models import PaymentType, Payment, Wallet
+from .serializers import PaymentTypeSerializer, PaymentTypeChoiceSerializer, MembershipPaymentSerializer, \
+    WalletSerializer
 
 
 class PaymentTypeViewSet(ModelViewSet):
@@ -33,5 +36,11 @@ class PaymentTypeChoicesView(APIView):
         serializer.is_valid()
         return Response(serializer.data)
 
-#
-#
+
+class WalletDetail(generics.RetrieveAPIView):
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.wallet
