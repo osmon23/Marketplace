@@ -39,7 +39,7 @@ class SellerViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         if not hasattr(self, 'wallet'):
-            Wallet.objects.create(user=self)
+            Wallet.objects.create(seller=instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 

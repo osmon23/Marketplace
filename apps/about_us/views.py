@@ -35,10 +35,15 @@ class AboutUsListView(generics.ListAPIView):
         return Response(about_us_data)
 
 
-class ContactsViewSet(viewsets.ModelViewSet):
+class ContactsListView(generics.ListAPIView):
     queryset = Contacts.objects.all()
     serializer_class = ContactsSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
+
+# class ContactsViewSet(viewsets.ModelViewSet):
+#     queryset = Contacts.objects.all()
+#     serializer_class = ContactsSerializer
+#     permission_classes = [permissions.IsAdminUser]
 
 '''
 если понадобится crud на будущее

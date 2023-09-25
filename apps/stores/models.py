@@ -129,14 +129,12 @@ class Product(models.Model):
     def get_actual_payment(self):
         payments = self.payments.filter(
             start_date__lte=date.today(),
-            end_date__gte=date.today(),
-            is_active=True
         )
 
         return payments.first()
 
-    def get_payment_by_date(self, start_date: date, end_date: date, exclude: int = None):
-        date_range = generate_dates(start_date, end_date)
+    def get_payment_by_date(self, start_date: date, exclude: int = None):
+        date_range = generate_dates(start_date,)
 
         payments = self.payments.filter(
             Q(start_date__in=date_range) | Q(end_date__in=date_range)

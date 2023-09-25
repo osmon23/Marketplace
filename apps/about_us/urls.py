@@ -2,14 +2,14 @@ from django.urls import  path
 from rest_framework import routers
 
 
-from .views import AboutUsListView, ContactsViewSet
+from .views import AboutUsListView, ContactsListView
 
 router = routers.DefaultRouter()
 
-router.register(r'contacts', ContactsViewSet, basename='contacts')
 
 urlpatterns = [
     path('', AboutUsListView.as_view(), name='about_us'),
+    path('contacts/', ContactsListView.as_view(), name='contacts'),
 ] + router.urls
 
 

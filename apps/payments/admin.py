@@ -15,7 +15,7 @@ class PaymentTypeAdmin(admin.ModelAdmin):
     list_filter = ('type',)
     search_fields = (
         'name',
-        'price'
+        'price',
     )
 
 

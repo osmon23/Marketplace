@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import AboutUs, AboutUsImage, AboutUsVideo
+from .models import AboutUs, AboutUsImage, AboutUsVideo, Contacts
 
 
 class AboutUsImageSerializer(serializers.ModelSerializer):
@@ -24,10 +24,11 @@ class AboutUsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ContactsSerializer(serializers.Serializer):
+class ContactsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AboutUs
+        model = Contacts
         fields = (
+            'id',
             'name',
             'value',
         )
