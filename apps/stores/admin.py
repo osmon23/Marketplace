@@ -55,6 +55,7 @@ class ProductAdmin(admin.ModelAdmin):
         'name',
         'price',
         'quantity',
+        'range_weight',
     )
     list_display_links = (
         'name',

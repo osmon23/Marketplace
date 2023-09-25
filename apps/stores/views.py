@@ -11,16 +11,17 @@ from .serializers import (
     CategorySerializer,
     ProductDiscountSerializer
 )
-from .permissions import IsAdminOrSeller
+from apps.stores.permissions import IsAdminOrSeller
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('-range_weight')
     serializer_class = ProductSerializer
     filter_backends = [filters.OrderingFilter, django_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
     ordering_fields = ['name', 'price']
     permission_classes = [IsAdminOrSeller]
+
 
 
 class StoreViewSet(viewsets.ModelViewSet):

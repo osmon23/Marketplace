@@ -35,6 +35,8 @@ class Article(models.Model):
     photo = models.ImageField(
         _('Photo'),
         upload_to=f'articles/{title}',
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

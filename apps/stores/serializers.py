@@ -165,7 +165,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'store',
             'discounts',
             'payment',
-            'fuel_type'
+            'fuel_type',
+            'range_weight',
         )
 
 

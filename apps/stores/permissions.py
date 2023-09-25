@@ -7,15 +7,9 @@ class IsAdminOrSeller(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'GET':
             return True
-        return request.user and (request.user.is_staff or request.user.role == 'Seller')
+        elif request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            return request.user.is_authenticated and (request.user.is_staff or request.user.role == 'Seller')
+        return False
 
     def has_object_permission(self, request, view, obj):
-        if request.user.is_authenticated:
-            if request.method in permissions.SAFE_METHODS:
-                return True
-            if request.user.is_staff or request.user.role == 'Seller':
-                if isinstance(obj, Store):
-                    return obj.seller == request.user
-                elif isinstance(obj, Product):
-                    return obj.store.seller == request.user
-        return False
+        return True

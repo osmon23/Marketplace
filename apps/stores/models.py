@@ -125,6 +125,10 @@ class Product(models.Model):
         _('Quantity'),
         default=0
     )
+    range_weight = models.PositiveSmallIntegerField(
+        _('Range weight'),
+        default=0
+    )
 
     def get_actual_payment(self):
         payments = self.payments.filter(
