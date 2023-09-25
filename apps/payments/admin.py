@@ -39,5 +39,11 @@ class WalletAdmin(admin.ModelAdmin):
 
     list_display = (
         'id',
+        'seller_email',
         'amount',
     )
+
+    def seller_email(self, obj):
+        return obj.seller.email
+
+    seller_email.short_description = 'Email продавца'

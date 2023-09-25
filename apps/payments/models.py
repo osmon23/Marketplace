@@ -101,7 +101,7 @@ class Wallet(models.Model):
     )
 
     def __str__(self):
-        return f"{self.seller} - {self.amount}"
+        return f"{self.seller.email} - {self.amount}"
 
     class Meta:
         verbose_name = _("Wallet")

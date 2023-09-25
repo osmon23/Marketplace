@@ -8,6 +8,7 @@ from django_filters import rest_framework as filters
 
 from .constants import PaymentTypeChoices
 from .models import PaymentType, Payment, Wallet
+from .permissions import IsOwnerOrAdmin
 from .serializers import PaymentTypeSerializer, PaymentTypeChoiceSerializer, MembershipPaymentSerializer, \
     WalletSerializer
 
@@ -40,7 +41,7 @@ class PaymentTypeChoicesView(APIView):
 class WalletDetail(generics.RetrieveAPIView):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
 
-    def get_object(self):
-        return self.request.user.wallet
+    # def get_object(self):
+    #     return self.request.user.wallet

@@ -60,10 +60,13 @@ class PaymentTypeChoiceSerializer(serializers.Serializer):
         return {'value': str(obj[0]), 'label': str(obj[1])}
 
 
-class WalletSerializer(serializers.Serializer):
+class WalletSerializer(serializers.ModelSerializer):
+    seller_email = serializers.EmailField(source='seller.email', read_only=True)
+
     class Meta:
         model = Wallet
         fields = (
             'id',
             'amount',
+            'seller_email',
         )
