@@ -11,7 +11,7 @@ from utils.time import generate_dates
 
 
 class Store(models.Model):
-    seller = models.ForeignKey(
+    seller = models.OneToOneField(
         Seller,
         on_delete=models.CASCADE,
         related_name='stores',
