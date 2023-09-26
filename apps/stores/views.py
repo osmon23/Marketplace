@@ -23,7 +23,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrSeller]
 
 
-
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer

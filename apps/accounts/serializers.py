@@ -2,6 +2,37 @@ from rest_framework import serializers
 
 from .models import CustomUser, Seller
 
+from apps.stores.models import Store, Product
+
+from apps.payments.models import Wallet
+
+
+class WalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = (
+            'id',
+            'amount',
+        )
+
+
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = (
+            'id',
+            'name',
+        )
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'name',
+        )
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True,)
