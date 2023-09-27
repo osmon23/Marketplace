@@ -10,8 +10,8 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'clear_subscriptions': {
-        'task': 'apps.payments.tasks.clear_subscriptions',
+    'clear_tariffs': {
+        'task': 'apps.payments.tasks.clear_tariffs',
         'schedule': crontab(minute='*'),
         'kwargs': {},
     }
