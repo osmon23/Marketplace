@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, status
 from rest_framework import filters
 from django_filters import rest_framework as django_filters
+from rest_framework.response import Response
+
 
 from .filters import ProductFilter
 from .models import Product, Store, Review, Category, ProductDiscount
@@ -21,6 +23,16 @@ class ProductViewSet(viewsets.ModelViewSet):
     filterset_class = ProductFilter
     ordering_fields = ['name', 'price']
     permission_classes = [IsAdminOrSeller]
+
+    def perform_create(self, serializer):
+        seller = self.request.user
+        product_limit = seller.store.product_limit
+
+        if seller.products.count() >= product_limit:
+            return Response({'error': 'Превышен лимит продуктов для этого продавца.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save(store=seller.store)
 
 
 class StoreViewSet(viewsets.ModelViewSet):

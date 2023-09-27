@@ -2,11 +2,12 @@ from django.db import models
 from django.utils.datetime_safe import date
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-
+from django.core.exceptions import ValidationError
 
 from mptt.models import MPTTModel, TreeForeignKey
 
 from apps.accounts.models import Seller
+
 from utils.time import generate_dates
 
 
@@ -34,9 +35,32 @@ class Store(models.Model):
         null=True,
         blank=True,
     )
+    product_limit = models.PositiveSmallIntegerField(
+        _('Product limit'),
+        default=10,
+    )
 
     def __str__(self):
         return self.name
+
+    def get_actual_payment(self):
+        payments = self.payments.filter(
+            start_date__lte=date.today(),
+            end_date__gte=date.today(),
+            is_active=True
+        )
+
+        return payments.first()
+
+
+    def get_payment_by_date(self, start_date: date, end_date: date, exclude: int = None):
+        date_range = generate_dates(start_date, end_date)
+
+        payments = self.payments.filter(
+            Q(start_date__in=date_range) | Q(end_date__in=date_range)
+        ).exclude(pk=exclude)
+
+        return payments.first()
 
     class Meta:
         verbose_name = _('Store')
@@ -263,4 +287,6 @@ class ProductDiscount(models.Model):
 
     def calculate_discounted_price(self):
         return self.product.price * (100 - self.discount) / 100
+
+
 

@@ -77,6 +77,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class StoreSerializer(serializers.ModelSerializer):
     seller = serializers.PrimaryKeyRelatedField(queryset=Seller.objects.all())
+    product_limit = serializers.ReadOnlyField()
     class Meta:
         model = Store
         fields = (
@@ -86,6 +87,7 @@ class StoreSerializer(serializers.ModelSerializer):
             'description',
             'logo',
             'seller',
+            'product_limit',
         )
 
 
@@ -102,7 +104,10 @@ class ProductDiscountSerializer(serializers.ModelSerializer):
             'end_date',
             'discounted_price')
 
-    def get_discounted_price(self, obj):
+    def get_discounted_price(self, obj) -> int | float | None:
+        if not obj.product:
+            return None
+
         return obj.calculate_discounted_price()
 
 
@@ -124,6 +129,7 @@ class ProductSerializer(serializers.ModelSerializer):
     discounts = ProductDiscountSerializer(many=True, read_only=True)
     payment = serializers.SerializerMethodField(read_only=True)
     fuel_type = FuelTypeSerializer(read_only=True)
+    range_weight = serializers.ReadOnlyField()
 
     def get_payment(self, obj: Product) -> dict:
         payment = obj.get_actual_payment()

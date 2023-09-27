@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.payments.models import PaymentType, Payment, Wallet
+from apps.payments.models import PaymentType, Payment, TariffType, TariffPayment
 
 
 @admin.register(PaymentType)
@@ -8,11 +8,9 @@ class PaymentTypeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'type',
         'price',
     )
     list_display_links = ('name',)
-    list_filter = ('type',)
     search_fields = (
         'name',
         'price',
@@ -34,16 +32,42 @@ class PaymentAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Wallet)
-class WalletAdmin(admin.ModelAdmin):
-
+@admin.register(TariffType)
+class TariffTypeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'seller_email',
-        'amount',
+        'name',
+        'price',
+        'period',
+        'product_limit',
+        'range_weight',
+
+    )
+    list_display_links = ('name',)
+    search_fields = (
+        'name',
+        'price',
     )
 
-    def seller_email(self, obj):
-        return obj.seller.email
 
-    seller_email.short_description = 'Email продавца'
+@admin.register(TariffPayment)
+class TariffPaymentAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'store',
+        'type',
+        'amount',
+        'period',
+        'start_date',
+        'end_date',
+        'created_at',
+        'is_active',
+        'product_limit',
+        'range_weight',
+    )
+    list_filter = (
+        'is_active',
+    )
+    list_display_links = (
+        'store',
+    )

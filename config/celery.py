@@ -21,11 +21,11 @@ app.autodiscover_tasks()
 #         'kwargs': {},
 #     },
 # }
-
-app.conf.beat_schedule = {
-    'deduct_funds_daily': {
-        'task': 'apps.payments.tasks.deduct_funds_daily',
-        'schedule': crontab(hour=0, minute=0),
-        'kwargs': {},
-    }
-}
+#
+# app.conf.beat_schedule = {
+#     'deduct_funds_daily': {
+#         'task': 'apps.payments.tasks.deduct_funds_daily',
+#         'schedule': crontab(hour=0, minute=0),
+#         'kwargs': {},
+#     }
+# }

@@ -118,3 +118,23 @@ class Seller(CustomUser):
     class Meta:
         verbose_name = _('Seller')
         verbose_name_plural = _('Sellers')
+
+
+class Wallet(models.Model):
+    seller = models.OneToOneField(
+        Seller,
+        on_delete=models.CASCADE,
+        related_name='wallet',
+        verbose_name=_('Seller')
+    )
+    amount = models.PositiveIntegerField(
+        _('Amount'),
+        default=0
+    )
+
+    def __str__(self):
+        return f"{self.seller.email} - {self.amount}"
+
+    class Meta:
+        verbose_name = _("Wallet")
+        verbose_name_plural = _("Wallets")

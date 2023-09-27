@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics, permissions
 from rest_framework.response import Response
+
 
 from .serializers import (
     CustomUserSerializer,
@@ -9,10 +10,9 @@ from .serializers import (
     UserUpdateSerializer,
     SellerUpdateSerializer, StoreSerializer, ProductSerializer, WalletSerializer,
 )
-from .models import CustomUser, Seller
+from .models import CustomUser, Seller, Wallet
 from .constants import Role
-from .permissions import IsOwnerOrReadOnly
-from ..payments.models import Wallet
+from .permissions import IsOwnerOrReadOnly, IsOwnerOrAdmin
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -47,11 +47,6 @@ class SellerViewSet(viewsets.ModelViewSet):
             return SellerUpdateSerializer
         return self.serializer_class
 
-    def get_serializer_class(self):
-        if self.action == 'update':
-            return SellerUpdateSerializer
-        return self.serializer_class
-
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -66,3 +61,12 @@ class SellerViewSet(viewsets.ModelViewSet):
         data['wallet'] = wallet_data
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+class WalletDetail(generics.RetrieveAPIView):
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
+
+    # def get_object(self):
+    #     return self.request.user.wallet

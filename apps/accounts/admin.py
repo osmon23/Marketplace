@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from .models import CustomUser, Seller
+from .models import CustomUser, Seller, Wallet
 
 
 @admin.register(CustomUser)
@@ -108,3 +108,18 @@ class SellerAdmin(CustomUserAdmin):
             },
         ),
     )
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'id',
+        'seller_email',
+        'amount',
+    )
+
+    def seller_email(self, obj):
+        return obj.seller.email
+
+    seller_email.short_description = 'Email продавца'

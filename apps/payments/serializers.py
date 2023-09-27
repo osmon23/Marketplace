@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .constants import PaymentTypeChoices
-from .models import PaymentType, Payment, Wallet
+from .models import PaymentType, Payment, TariffType, TariffPayment
 
 
 class PaymentInlineSerializer(serializers.ModelSerializer):
@@ -17,14 +17,6 @@ class PaymentInlineSerializer(serializers.ModelSerializer):
 
 
 class PaymentTypeSerializer(serializers.ModelSerializer):
-    type = serializers.ChoiceField(choices=PaymentTypeChoices.choices)
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        for k, v in zip(PaymentTypeChoices.values, PaymentTypeChoices.labels):
-            if k == data['type']:
-                data['type'] = {'value': k, 'label': v}
-        return data
 
     class Meta:
         model = PaymentType
@@ -52,21 +44,12 @@ class MembershipPaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PaymentTypeChoiceSerializer(serializers.Serializer):
-    value = serializers.CharField()
-    label = serializers.CharField()
-
-    def to_representation(self, obj):
-        return {'value': str(obj[0]), 'label': str(obj[1])}
-
-
-class WalletSerializer(serializers.ModelSerializer):
-    seller_email = serializers.EmailField(source='seller.email', read_only=True)
-
+class TariffTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Wallet
-        fields = (
-            'id',
-            'amount',
-            'seller_email',
-        )
+        model = TariffType
+        fields = '__all__'
+
+class TariffPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TariffPayment
+        fields = '__all__'

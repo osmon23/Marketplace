@@ -68,6 +68,7 @@ class StoreAdmin(admin.ModelAdmin):
         'id',
         'name',
         'address',
+        'product_limit',
     )
     list_display_links = (
         'name',

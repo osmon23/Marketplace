@@ -1,7 +1,7 @@
 from datetime import date
 
 from celery import shared_task
-from apps.payments.models import Payment, SellerPayment, Wallet
+from apps.payments.models import Payment
 from utils.time import get_current_date
 
 
@@ -28,16 +28,16 @@ from utils.time import get_current_date
 #         payment.save()
 
 
-@shared_task
-def deduct_funds_daily():
-    payments = SellerPayment.objects.filter(start_date__lte=date.today())
-
-    for payment in payments:
-        amount_to_deduct = payment.type.price
-
-        wallet = Wallet.objects.get(seller=payment.seller)
-
-        if wallet.amount >= amount_to_deduct:
-            wallet.amount -= amount_to_deduct
-            wallet.save()
+# @shared_task
+# def deduct_funds_daily():
+#     payments = SellerPayment.objects.filter(start_date__lte=date.today())
+#
+#     for payment in payments:
+#         amount_to_deduct = payment.type.price
+#
+#         wallet = Wallet.objects.get(seller=payment.seller)
+#
+#         if wallet.amount >= amount_to_deduct:
+#             wallet.amount -= amount_to_deduct
+#             wallet.save()
 

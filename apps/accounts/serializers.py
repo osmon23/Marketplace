@@ -1,18 +1,20 @@
 from rest_framework import serializers
 
-from .models import CustomUser, Seller
+from .models import CustomUser, Seller, Wallet
 
 from apps.stores.models import Store, Product
 
-from apps.payments.models import Wallet
-
 
 class WalletSerializer(serializers.ModelSerializer):
+    seller_email = serializers.EmailField(source='seller.email', read_only=True)
+    amount = serializers.ReadOnlyField()
+
     class Meta:
         model = Wallet
         fields = (
             'id',
             'amount',
+            'seller_email',
         )
 
 
@@ -148,3 +150,6 @@ class SellerUpdateSerializer(serializers.ModelSerializer):
             'confirmation_code',
             'is_active',
         )
+
+
+

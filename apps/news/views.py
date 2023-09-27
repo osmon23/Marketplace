@@ -1,7 +1,7 @@
 
 from rest_framework import generics, permissions, viewsets
 
-from .permissions import IsStaffOrSellerOrReadOnly
+from .permissions import IsAdminOrSeller
 from .models import News, Article
 from .serializers import  NewsSerializer, ArticleSerializer
 
@@ -32,4 +32,4 @@ class NewsDetailView(generics.RetrieveAPIView):
 class ArticlesViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
-    permission_classes = [IsStaffOrSellerOrReadOnly]
+    permission_classes = [IsAdminOrSeller]
