@@ -1,8 +1,7 @@
 from rest_framework import viewsets, permissions, generics
 from rest_framework import filters
-from django_filters import rest_framework as django_filters
-from django.core.exceptions import ValidationError
 
+from django_filters import rest_framework as django_filters
 
 from .filters import ProductFilter
 from .models import Product, Store, Review, Category, ProductDiscount
@@ -13,7 +12,7 @@ from .serializers import (
     CategorySerializer,
     ProductDiscountSerializer
 )
-from apps.stores.permissions import IsAdminOrSellerOrReadOnly
+from .permissions import IsAdminOrSellerOrReadOnly
 
 
 class ProductViewSet(viewsets.ModelViewSet):

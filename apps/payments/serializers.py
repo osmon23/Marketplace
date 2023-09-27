@@ -1,10 +1,7 @@
-from datetime import timedelta
+from rest_framework import serializers
 
 from django.utils.translation import gettext_lazy as _
 
-from rest_framework import serializers
-
-from .constants import PaymentTypeChoices
 from .models import PaymentType, Payment, TariffType, TariffPayment
 
 
@@ -48,6 +45,7 @@ class TariffTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TariffType
         fields = '__all__'
+
 
 class TariffPaymentSerializer(serializers.ModelSerializer):
     class Meta:

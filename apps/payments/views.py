@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import viewsets, status, permissions
@@ -10,7 +8,8 @@ from django_filters import rest_framework as filters
 from django.db.models import F
 from django.utils import timezone
 
-from utils.time import get_current_date
+from datetime import timedelta
+
 from .models import PaymentType, Payment, TariffPayment, TariffType
 from .serializers import PaymentTypeSerializer, MembershipPaymentSerializer, TariffTypeSerializer, \
     TariffPaymentSerializer

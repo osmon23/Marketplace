@@ -1,11 +1,10 @@
-from datetime import timedelta, time
+from datetime import timedelta
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
 from utils.time import get_current_date
-from .constants import PaymentTypeChoices
 
 from ..stores.models import Product, Store
 

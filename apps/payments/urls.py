@@ -1,5 +1,6 @@
-from django.urls import include, path
 from rest_framework import routers
+
+from django.urls import include, path
 
 from apps.payments.views import PaymentTypeViewSet, PaymentViewSet, TariffTypeViewSet, TariffPaymentViewSet
 
