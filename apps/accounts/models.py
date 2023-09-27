@@ -84,7 +84,7 @@ class CustomUser(AbstractUser):
 
 
 class Seller(CustomUser):
-    INN = models.PositiveIntegerField(
+    INN = models.PositiveBigIntegerField(
         _('INN'),
         unique=True,
         validators=[validate_inn],
