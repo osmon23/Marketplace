@@ -28,6 +28,8 @@ class Store(models.Model):
     logo = models.ImageField(
         _('Logo'),
         upload_to=f"stores/{name}/",
+        blank=True,
+        null=True,
     )
     address = models.CharField(
         _('Address'),
@@ -154,21 +156,30 @@ class Product(models.Model):
         default=0
     )
 
-    def get_actual_payment(self):
-        payments = self.payments.filter(
-            start_date__lte=date.today(),
-        )
+    def clean(self):
+        super().clean()
+        if self.store.products.count() >= self.store.product_limit:
+            raise ValidationError('Превышен лимит продуктов для этого магазина.')
 
-        return payments.first()
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
-    def get_payment_by_date(self, start_date: date, exclude: int = None):
-        date_range = generate_dates(start_date,)
-
-        payments = self.payments.filter(
-            Q(start_date__in=date_range) | Q(end_date__in=date_range)
-        ).exclude(pk=exclude)
-
-        return payments.first()
+    # def get_actual_payment(self):
+    #     payments = self.payments.filter(
+    #         start_date__lte=date.today(),
+    #     )
+    #
+    #     return payments.first()
+    #
+    # def get_payment_by_date(self, start_date: date, exclude: int = None):
+    #     date_range = generate_dates(start_date,)
+    #
+    #     payments = self.payments.filter(
+    #         Q(start_date__in=date_range) | Q(end_date__in=date_range)
+    #     ).exclude(pk=exclude)
+    #
+    #     return payments.first()
 
     def __str__(self):
         return self.name

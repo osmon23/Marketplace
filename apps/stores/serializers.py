@@ -127,17 +127,17 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
     discounts = ProductDiscountSerializer(many=True, read_only=True)
-    payment = serializers.SerializerMethodField(read_only=True)
+    # payment = serializers.SerializerMethodField(read_only=True)
     fuel_type = FuelTypeSerializer(read_only=True)
     range_weight = serializers.ReadOnlyField()
 
-    def get_payment(self, obj: Product) -> dict:
-        payment = obj.get_actual_payment()
-
-        if not payment:
-            return {}
-
-        return PaymentInlineSerializer(payment).data
+    # def get_payment(self, obj: Product) -> dict:
+    #     payment = obj.get_actual_payment()
+    #
+    #     if not payment:
+    #         return {}
+    #
+    #     return PaymentInlineSerializer(payment).data
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
@@ -170,7 +170,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',
             'store',
             'discounts',
-            'payment',
+            # 'payment',
             'fuel_type',
             'range_weight',
         )

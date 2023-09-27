@@ -1,7 +1,7 @@
-from rest_framework import viewsets, permissions, generics, status
+from rest_framework import viewsets, permissions, generics
 from rest_framework import filters
 from django_filters import rest_framework as django_filters
-from rest_framework.response import Response
+from django.core.exceptions import ValidationError
 
 
 from .filters import ProductFilter
@@ -13,7 +13,7 @@ from .serializers import (
     CategorySerializer,
     ProductDiscountSerializer
 )
-from apps.stores.permissions import IsAdminOrSeller
+from apps.stores.permissions import IsAdminOrSellerOrReadOnly
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -22,23 +22,13 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, django_filters.DjangoFilterBackend]
     filterset_class = ProductFilter
     ordering_fields = ['name', 'price']
-    permission_classes = [IsAdminOrSeller]
-
-    def perform_create(self, serializer):
-        seller = self.request.user
-        product_limit = seller.store.product_limit
-
-        if seller.products.count() >= product_limit:
-            return Response({'error': 'Превышен лимит продуктов для этого продавца.'},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        serializer.save(store=seller.store)
+    permission_classes = [IsAdminOrSellerOrReadOnly]
 
 
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
-    permission_classes = [IsAdminOrSeller]
+    permission_classes = [IsAdminOrSellerOrReadOnly]
 
 
 class ReviewCreateView(generics.CreateAPIView):
@@ -56,5 +46,5 @@ class CategoryListView(generics.ListAPIView):
 class ProductDiscountViewSet(viewsets.ModelViewSet):
     queryset = ProductDiscount.objects.all()
     serializer_class = ProductDiscountSerializer
-    permission_classes = [IsAdminOrSeller]
+    permission_classes = [IsAdminOrSellerOrReadOnly]
 
