@@ -162,6 +162,11 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.clean()
+        if self.store.payments.exists():
+            tariff_payment = self.store.payments.first()
+
+            self.range_weight = tariff_payment.range_weight
+
         super().save(*args, **kwargs)
 
     def __str__(self):

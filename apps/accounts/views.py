@@ -75,10 +75,9 @@ class WalletDetail(generics.RetrieveAPIView):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])  # Этот декоратор обеспечивает, что только аутентифицированные пользователи могут выполнять этот запрос
+@permission_classes([IsAuthenticated])
 def get_user_info(request):
-    user = request.user  # Получаем текущего аутентифицированного пользователя
-
+    user = request.user
     if user:
         data = {
             'id': user.id,
@@ -88,3 +87,4 @@ def get_user_info(request):
         return JsonResponse(data)
     else:
         return JsonResponse({'error': 'Пользователь не найден'}, status=404)
+
