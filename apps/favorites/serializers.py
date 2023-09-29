@@ -11,8 +11,7 @@ class FavoriteItemSerializer(serializers.ModelSerializer):
 
 class FavoriteItemListSerializer(serializers.ModelSerializer):
     product = serializers.StringRelatedField()
-    product_id = serializers.IntegerField(source='product.id')  # Добавляем поле product_id
-
+    product_id = serializers.IntegerField(source='product.id')
 
     class Meta:
         model = FavoriteItem
