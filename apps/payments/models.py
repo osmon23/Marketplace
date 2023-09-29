@@ -188,3 +188,6 @@ class TariffPayment(models.Model):
 
         if not self.range_weight:
             self.range_weight = self.type.range_weight
+
+
+#
