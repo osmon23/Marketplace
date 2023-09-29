@@ -2,7 +2,9 @@ from django.shortcuts import render
 
 from rest_framework import viewsets, status, generics, permissions
 from rest_framework.response import Response
-
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.http import JsonResponse
 
 from .serializers import (
     CustomUserSerializer,
@@ -70,3 +72,19 @@ class WalletDetail(generics.RetrieveAPIView):
 
     # def get_object(self):
     #     return self.request.user.wallet
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Этот декоратор обеспечивает, что только аутентифицированные пользователи могут выполнять этот запрос
+def get_user_info(request):
+    user = request.user  # Получаем текущего аутентифицированного пользователя
+
+    if user:
+        data = {
+            'id': user.id,
+            'role': user.role,
+            'email': user.email,
+        }
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'Пользователь не найден'}, status=404)

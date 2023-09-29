@@ -13,7 +13,6 @@ def clear_tariffs():
     for tariff in expired_tariffs:
         store = tariff.store
         store.product_limit = 10
-        store.product.range_weight = 0
         store.save()
         tariff.is_active = False
         tariff.save()
