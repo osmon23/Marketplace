@@ -1,8 +1,20 @@
+from datetime import datetime
+
 from rest_framework import serializers
 
-from .models import Specifications, ProductImage, Product, Store, Review, Category, ProductDiscount, FuelType
+from .models import (
+    Specifications,
+    ProductImage,
+    Product,
+    Store,
+    Review,
+    Category,
+    ProductDiscount,
+    FuelType
+)
 
 from ..accounts.models import Seller
+from ..payments.models import Payment
 
 
 class FilterReviewListSerializer(serializers.ListSerializer):
@@ -128,6 +140,7 @@ class ProductSerializer(serializers.ModelSerializer):
     discounts = ProductDiscountSerializer(many=True, read_only=True)
     fuel_type = FuelTypeSerializer(read_only=True)
     range_weight = serializers.ReadOnlyField()
+    has_active_payments = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
@@ -142,6 +155,10 @@ class ProductSerializer(serializers.ModelSerializer):
             Specifications.objects.create(product=product, **spec_data)
 
         return product
+
+    def get_has_active_payments(self, obj):
+        today = datetime.today()
+        return Payment.objects.filter(product=obj, start_date=today).exists()
 
     class Meta:
         model = Product
@@ -162,6 +179,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'discounts',
             'fuel_type',
             'range_weight',
+            'has_active_payments',
         )
 
 

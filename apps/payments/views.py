@@ -4,15 +4,25 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from django_filters import rest_framework as filters
+from django.db import transaction
 from django.db.models import F
+from django_filters import rest_framework as filters
 from django.utils import timezone
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
-from .models import PaymentType, Payment, TariffPayment, TariffType
-from .serializers import PaymentTypeSerializer, MembershipPaymentSerializer, TariffTypeSerializer, \
-    TariffPaymentSerializer
+from .models import (
+    PaymentType,
+    Payment,
+    TariffPayment,
+    TariffType,
+)
+from .serializers import (
+    PaymentTypeSerializer,
+    TariffTypeSerializer,
+    TariffPaymentSerializer,
+    PaymentSerializer,
+)
 from ..stores.models import Product
 
 
@@ -24,10 +34,42 @@ class PaymentTypeViewSet(ModelViewSet):
 
 class PaymentViewSet(ModelViewSet):
     queryset = Payment.objects.all()
-    serializer_class = MembershipPaymentSerializer
+    serializer_class = PaymentSerializer
     permission_classes = [AllowAny]
     filter_backends = [filters.DjangoFilterBackend]
     filterset_fields = ['product', 'type']
+
+    @action(detail=False, methods=['POST'])
+    def start_payment(self, request):
+        seller = self.request.user
+        product_id = request.data.get('product')
+        payment_type_id = request.data.get('type')
+
+        try:
+            product = Product.objects.get(id=product_id)
+            payment_type = PaymentType.objects.get(id=payment_type_id)
+        except (Product.DoesNotExist, PaymentType.DoesNotExist):
+            return Response({'error': 'Product or PaymentType not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if seller.seller.wallet.amount < payment_type.price:
+            return Response({'error': 'Insufficient funds'}, status=status.HTTP_400_BAD_REQUEST)
+
+        with transaction.atomic():
+            payment = Payment.objects.create(product=product, type=payment_type, amount=payment_type.price)
+            seller.seller.wallet.amount -= payment_type.price
+            seller.seller.wallet.save()
+
+        return Response({'success': 'Payment started successfully'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['POST'])
+    def stop_payment(self, request):
+        seller = self.request.user
+        payments_to_stop = Payment.objects.filter(product__store__seller=seller, start_date=datetime.today())
+
+        for payment in payments_to_stop:
+            payment.delete()
+
+        return Response({'success': 'Payments stopped successfully'}, status=status.HTTP_200_OK)
 
 
 class TariffTypeViewSet(viewsets.ReadOnlyModelViewSet):

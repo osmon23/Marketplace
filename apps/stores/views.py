@@ -4,7 +4,14 @@ from rest_framework import filters
 from django_filters import rest_framework as django_filters
 
 from .filters import ProductFilter
-from .models import Product, Store, Review, Category, ProductDiscount
+from .models import (
+    Product,
+    Store,
+    Review,
+    Category,
+    ProductDiscount,
+)
+
 from .serializers import (
     ProductSerializer,
     StoreSerializer,
@@ -12,6 +19,7 @@ from .serializers import (
     CategorySerializer,
     ProductDiscountSerializer
 )
+
 from .permissions import IsAdminOrSellerOrReadOnly
 
 

@@ -14,14 +14,14 @@ app.conf.beat_schedule = {
         'task': 'apps.payments.tasks.clear_tariffs',
         'schedule': crontab(minute='*'),
         'kwargs': {},
-    }
+    },
+
+    'start_daily_payment': {
+        'task': 'apps.payments.tasks.start_daily_payment',
+        'schedule': crontab(hour=0, minute=0),
+        'kwargs': {},
+    },
 }
-#     'activate_payment': {
-#         'task': 'apps.payments.tasks.activate_payment',
-#         'schedule': crontab(hour=0, minute=0),
-#         'kwargs': {},
-#     },
-# }
 #
 # app.conf.beat_schedule = {
 #     'deduct_funds_daily': {

@@ -190,4 +190,3 @@ class TariffPayment(models.Model):
             self.range_weight = self.type.range_weight
 
 
-#

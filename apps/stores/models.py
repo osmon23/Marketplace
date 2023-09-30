@@ -1,10 +1,6 @@
 from django.db import models
-from django.db.models import Q
-from django.utils.datetime_safe import date
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-
-from utils.time import generate_dates
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -44,24 +40,6 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_actual_payment(self):
-        payments = self.payments.filter(
-            start_date__lte=date.today(),
-            end_date__gte=date.today(),
-            is_active=True
-        )
-
-        return payments.first()
-
-    def get_payment_by_date(self, start_date: date, end_date: date, exclude: int = None):
-        date_range = generate_dates(start_date, end_date)
-
-        payments = self.payments.filter(
-            Q(start_date__in=date_range) | Q(end_date__in=date_range)
-        ).exclude(pk=exclude)
-
-        return payments.first()
 
     class Meta:
         verbose_name = _('Store')
