@@ -2,6 +2,8 @@ from django.db import models
 
 from django.utils.translation import gettext_lazy as _
 
+from apps.accounts.models import CustomUser
+
 
 class News(models.Model):
     name = models.CharField(
@@ -38,6 +40,11 @@ class Article(models.Model):
         blank=True,
         null=True,
     )
+    created_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE
+    )
+
 
     def __str__(self):
         return self.title
