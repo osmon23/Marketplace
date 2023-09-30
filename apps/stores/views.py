@@ -2,6 +2,8 @@ from rest_framework import viewsets, permissions, generics
 from rest_framework import filters
 
 from django_filters import rest_framework as django_filters
+from rest_framework.response import Response
+
 
 from .filters import ProductFilter
 from .models import (
@@ -36,6 +38,18 @@ class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = [IsAdminOrSellerOrReadOnly]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        products = Product.objects.filter(store=instance)
+        store_serializer = StoreSerializer(instance)
+        product_serializer = ProductSerializer(products, many=True)
+
+        response_data = {
+            "store_info": store_serializer.data,
+            "products": product_serializer.data
+        }
+        return Response(response_data)
 
 
 class ReviewCreateView(generics.CreateAPIView):
