@@ -1,10 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 from mptt.models import MPTTModel, TreeForeignKey
+from datetime import date
 
 from apps.accounts.models import Seller
+
+from utils.time import generate_dates
 
 
 class Store(models.Model):
@@ -37,6 +41,16 @@ class Store(models.Model):
         _('Product limit'),
         default=10,
     )
+
+    def get_payment_by_date(self, start_date: date, end_date: date, exclude: int = None, is_active: bool = True):
+        date_range = generate_dates(start_date, end_date)
+
+        payments = self.payments.filter(
+            Q(start_date__in=date_range) | Q(end_date__in=date_range),
+            is_active=is_active
+        ).exclude(pk=exclude)
+
+        return payments.first()
 
     def __str__(self):
         return self.name
