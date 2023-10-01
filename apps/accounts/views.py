@@ -54,8 +54,13 @@ class SellerViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         data = serializer.data
 
-        store_data = StoreSerializer(instance.stores).data
-        product_data = ProductSerializer(instance.stores.products.all(), many=True).data
+        if hasattr(instance, 'stores'):
+            store_data = StoreSerializer(instance.stores).data
+            product_data = ProductSerializer(instance.stores.products.all(), many=True).data
+        else:
+            store_data = {}
+            product_data = []
+
         wallet_data = WalletSerializer(instance.wallet).data
 
         data['store'] = store_data
