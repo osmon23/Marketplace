@@ -12,7 +12,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'clear_tariffs': {
         'task': 'apps.payments.tasks.clear_tariffs',
-        'schedule': crontab(minute='*'),
+        'schedule': crontab(hour=0, minute=0),
         'kwargs': {},
     },
 

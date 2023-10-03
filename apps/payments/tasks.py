@@ -1,9 +1,10 @@
-from datetime import datetime
+from datetime import date
 
 from celery import shared_task
 
 from apps.accounts.models import Seller
 from apps.payments.models import TariffPayment, Payment
+from apps.stores.models import Product
 from utils.time import get_current_date
 
 
@@ -17,28 +18,31 @@ def clear_tariffs():
         store.product_limit = 10
         store.save()
         tariff.is_active = False
+        Product.objects.filter(store=store).update(range_weight=0)
         tariff.save()
 
 
 @shared_task
 def start_daily_payment():
-    sellers_with_payments = Seller.objects.filter(payment__isnull=False).distinct()
+    today = date.today()
 
-    for seller in sellers_with_payments:
+    active_payments = Payment.objects.filter(start_date=today, is_active=True)
+
+    for payment in active_payments:
+        seller = payment.product.store.seller
         wallet = seller.wallet
         current_balance = wallet.amount
 
-        active_payments = Payment.objects.filter(product__store__seller=seller, start_date=datetime.today())
+        payment_type = payment.type
+        payment_amount = payment_type.price
 
-        for payment in active_payments:
-            payment_type = payment.type
-            payment_amount = payment_type.price
+        if current_balance < payment_amount:
+            payment.is_active = False
+            payment.delete()
+        else:
+            wallet.amount -= payment_amount
+            wallet.save()
 
-            if current_balance < payment_amount:
-                payment.delete()
-            else:
-                wallet.amount -= payment_amount
-                wallet.save()
 
 # @shared_task
 # def activate_payment():

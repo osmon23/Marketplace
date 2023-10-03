@@ -276,7 +276,7 @@ class ProductDiscount(models.Model):
         verbose_name = _('Product Discount')
         verbose_name_plural = _('Product Discounts')
 
-    def calculate_discounted_price(self):
+    def calculate_discounted_price(self) :
         return self.product.price * (100 - self.discount) / 100
 
 

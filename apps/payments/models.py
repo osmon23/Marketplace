@@ -52,6 +52,10 @@ class Payment(models.Model):
         _('Date of creation'),
         auto_now_add=True
     )
+    is_active = models.BooleanField(
+        _('Is active'),
+        default=True,
+    )
 
     def __str__(self):
         return f"{self.product} - {self.type}"

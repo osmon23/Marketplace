@@ -26,6 +26,7 @@ class PaymentAdmin(admin.ModelAdmin):
         'amount',
         'created_at',
         'start_date',
+        'is_active',
     )
     list_filter = (
         'type',
