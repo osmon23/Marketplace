@@ -1,8 +1,10 @@
 from rest_framework import generics, permissions, viewsets
+from rest_framework.generics import ListAPIView
 
 from .permissions import IsAdminOrSellerOrReadOnly
 from .models import News, Article
 from .serializers import NewsSerializer, ArticleSerializer
+from ..accounts.constants import Role
 
 
 class NewsListView(generics.ListAPIView):
@@ -29,3 +31,16 @@ class ArticlesViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+
+class SellerArticlesListView(ListAPIView):
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAdminOrSellerOrReadOnly]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            queryset = Article.objects.none()
+        else:
+            queryset = Article.objects.filter(created_by=user)
+        return queryset
