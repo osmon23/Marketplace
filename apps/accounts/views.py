@@ -36,13 +36,16 @@ class SellerViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
         instance = serializer.save()
         instance.is_active = False
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
+        instance.save()
         if not hasattr(self, 'wallet'):
             Wallet.objects.create(seller=instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get_serializer_class(self):
         if self.action == 'update':
