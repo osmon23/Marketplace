@@ -77,7 +77,7 @@ class Category(MPTTModel):
         return self.name
 
     class MPTTMeta:
-        verbose_name = _('Categories')
+        verbose_name = _('Category')
         verbose_name_plural = _('Categories')
         order_insertion_by = ['name']
         level_attr = 'mptt_level'
